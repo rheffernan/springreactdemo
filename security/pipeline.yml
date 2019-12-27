@@ -52,7 +52,7 @@ jobs:
              - |
                cd demogit/security
                mvn package
-               cp target/react-and-spring-data-rest-security-0.0.1-SNAPSHOT.jar ../outwar
+               cp target/react-and-spring-data-rest-security-0.0.1-SNAPSHOT.jar ../../outwar
   - task: finder2 
     config:
        platform: linux
@@ -68,8 +68,8 @@ jobs:
              - -c
              - |
                pwd
-               find . | grep  "war"
-               find .. -name "*.war" -exec ls -al {} \;
+               find . | grep  "spring*.jar"
+               find .. -name "spring*.jar" -exec ls -al {} \;
                find ..
   - put: outjar
     params:
