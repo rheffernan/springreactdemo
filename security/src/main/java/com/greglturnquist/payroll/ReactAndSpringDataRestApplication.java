@@ -26,9 +26,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SuppressWarnings({"PMD.ClassWithOnlyPrivateConstructorsShouldBeFinal"})
 public class ReactAndSpringDataRestApplication {
 
-	private ReactAndSpringDataRestApplication() {
-		//needed a private constructor to please PMD (since all methods are static)
-	}
+//	private ReactAndSpringDataRestApplication() {
+//		//needed a private constructor to please PMD (since all methods are static)
+//	}
 
 
 	public static void main(String[] args) {
