@@ -52,8 +52,8 @@ public class Employee {
 
 	@Override
 	public boolean equals(Object o) {
-		if (this == o) return true;
-		if (o == null || getClass() != o.getClass()) return false;
+		if (this == o) {return true;}
+		if (o == null || getClass() != o.getClass()) {return false;}
 		Employee employee = (Employee) o;
 		return Objects.equals(id, employee.id) &&
 			Objects.equals(firstName, employee.firstName) &&

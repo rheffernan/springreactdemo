@@ -15,7 +15,7 @@
  */
 package com.greglturnquist.payroll;
 
-import static com.greglturnquist.payroll.WebSocketConfiguration.*;
+//import static com.greglturnquist.payroll.WebSocketConfiguration.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.rest.core.annotation.HandleAfterCreate;
@@ -35,6 +35,8 @@ import org.springframework.stereotype.Component;
 public class EventHandler {
 
 	private final SimpMessagingTemplate websocket;
+
+	static final String MESSAGE_PREFIX = "/topic";
 
 	private final EntityLinks entityLinks;
 
