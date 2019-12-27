@@ -41,8 +41,8 @@ jobs:
        image_resource:
           type: docker-image
           source:
-             repository: openjdk
-             tag: 11-jdk
+             repository: adoptopenjdk/maven-openjdk11
+             tag: latest
        inputs: [{name: demogit}]
        outputs: [{name: outwar}]
        run:
@@ -60,8 +60,8 @@ jobs:
        image_resource:
           type: docker-image
           source:
-             repository: openjdk
-             tag: 11-jdk
+             repository: adoptopenjdk/maven-openjdk11
+             tag: latest
        run:
           path: sh
           args:
@@ -108,8 +108,8 @@ jobs:
        image_resource:
           type: docker-image
           source:
-             repository: openjdk
-             tag: 11-jdk
+             repository: adoptopenjdk/maven-openjdk11
+             tag: latest
        inputs: [{name: outjar}]
        run:
           path: sh
