@@ -93,8 +93,8 @@ jobs:
           args:
              - -c
              - |
-               #pmd -language java -dir . -rulesets rulesets/java/quickstart.xml
-               pmd -language java -dir . -rulesets rulesets/java/unusedcode.xml
+               pmd -language java -dir demogit/security -rulesets rulesets/java/quickstart.xml
+               #pmd -language java -dir demogit/security -rulesets rulesets/java/unusedcode.xml
 
 - name: itest 
   public: true
