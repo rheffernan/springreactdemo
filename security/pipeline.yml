@@ -50,7 +50,7 @@ jobs:
           args:
              - -c
              - |
-               cd demogit
+               cd demogit/security
                mvn package
                cp target/react-and-spring-data-rest-security-0.0.1-SNAPSHOT.jar ../outwar
   - task: finder2 
