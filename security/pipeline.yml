@@ -119,12 +119,9 @@ jobs:
                find .
                java -jar outjar/react-and-spring-data-rest-security-0.0.1-SNAPSHOT.jar &
                sleep 45
-               curl "http://greg:turnquist@localhost:8080/api/employees" 
-               curl "http://greg:turnquist@localhost:8080/api/employees/1" 
-               curl "http://greg:turnquist@localhost:8080/api/employees/2" 
                curl "http://greg:turnquist@localhost:8080/api/employees" | grep Frodo
-               curl "http://greg:turnquist@localhost:8080/api/employees/1" | grep Bilbo
-               curl "http://greg:turnquist@localhost:8080/api/employees/2" | grep Frodo
+               curl "http://greg:turnquist@localhost:8080/api/employees/3" | grep Frodo
+               curl "http://greg:turnquist@localhost:8080/api/employees/4" | grep Bilbo
                
 groups:
 - name: main
