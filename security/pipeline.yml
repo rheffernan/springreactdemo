@@ -1,0 +1,135 @@
+targets:
+  tutorial:
+    api: http://desk1.fairuse.org:8080
+    team: main
+    token:
+      type: Bearer
+      value: eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJjc3JmIjoiYjE3ZDgxZmMwMWIxNDE1Mjk2OWIyZDc4NWViZmVjM2EzM2IyY2MxYWZjZjU3Njc1ZWYwYzY0MTM3MWMzNzI3OSIsImV4cCI6MTUyMjcwMjUwMCwiaXNBZG1pbiI6dHJ1ZSwidGVhbU5hbWUiOiJtYWluIn0.JNutBGQJMKyFzow5eQOTXAw3tOeM8wmDGMtZ-GCsAVoB7D1WHv-nHIb3Rf1zWw166FuCrFqyLYnMroTlQHyPQUTJFDTiMEGnc5AY8wjPjgpwjsjyJ465ZX-70v1J4CWcTHjRGrB1XCfSs652s8GJQlDf0x2hi5K0xxvAxsb0svv6MRs8aw1ZPumguFOUmj-rBlum5k8vnV-2SW6LjYJAnRwoj8VmcGLfFJ5PXGHeunSlMdMNBgHEQgmMKf7bFBPKtRuEAglZWBSw9ryBopej7Sr3VHPZEck37CPLDfwqfKErXy_KhBA_ntmZ87H1v3fakyBSzxaTDjbpuOFZ9yDkGA
+
+resources:
+   - name: demogit
+     type: git
+     source: {uri: "https://github.com/rheffernan/springreactdemo.git"}
+   - name: buildcontainer
+     type: docker-image
+     source:
+        repository: adoptopenjdk/maven-openjdk11
+        tag: latest
+
+   - name: outjar
+     type: s3
+     source:
+        bucket: concourse-ronan
+        versioned_file: demo-0.0.1-SNAPSHOT.war
+        access_key_id: ((S3_ACCESS_KEY))
+        secret_access_key: ((S3_SECRET_KEY))
+        region: us-east-1
+
+
+jobs:
+- name: build
+  public: true
+  plan:
+  - get: demogit
+    passed: [statican]
+    trigger: true
+  - get: buildcontainer
+    trigger: true
+  - task: builder
+    config:
+       platform: linux
+       image_resource:
+          type: docker-image
+          source:
+             repository: openjdk
+             tag: 11-jdk
+       inputs: [{name: demogit}]
+       outputs: [{name: outwar}]
+       run:
+          path: sh
+          args:
+             - -c
+             - |
+               cd demogit
+               mvn package
+               cp target/react-and-spring-data-rest-security-0.0.1-SNAPSHOT.jar ../outwar
+  - task: finder2 
+    config:
+       platform: linux
+       inputs: [{name: outwar}]
+       image_resource:
+          type: docker-image
+          source:
+             repository: openjdk
+             tag: 11-jdk
+       run:
+          path: sh
+          args:
+             - -c
+             - |
+               pwd
+               find . | grep  "war"
+               find .. -name "*.war" -exec ls -al {} \;
+               find ..
+  - put: outjar
+    params:
+       file: outwar/react-and-spring-data-rest-security-0.0.1-SNAPSHOT.jar
+  
+- name: statican
+  public: true
+  plan:
+  - get: demogit
+    trigger: true
+  - task: pmd
+    config:
+       platform: linux
+       image_resource:
+          type: docker-image
+          source:
+             repository: rawdee/pmd
+       inputs: [{name: demogit}]
+       run:
+          path: sh
+          args:
+             - -c
+             - |
+               #pmd -language java -dir . -rulesets rulesets/java/quickstart.xml
+               pmd -language java -dir . -rulesets rulesets/java/unusedcode.xml
+
+- name: itest 
+  public: true
+  plan:
+  - get: outjar
+    passed: [build]
+    trigger: true
+  - task: test
+    config:
+       platform: linux
+       image_resource:
+          type: docker-image
+          source:
+             repository: openjdk
+             tag: 11-jdk
+       inputs: [{name: outjar}]
+       run:
+          path: sh
+          args:
+             - -c
+             - |
+               find .
+               java -jar outjar/react-and-spring-data-rest-security-0.0.1-SNAPSHOT.jar &
+               sleep 45
+               curl "http://greg:turnquist@localhost:8080/api/employees" 
+               curl "http://greg:turnquist@localhost:8080/api/employees/1" 
+               curl "http://greg:turnquist@localhost:8080/api/employees/2" 
+               curl "http://greg:turnquist@localhost:8080/api/employees" | grep Frodo
+               curl "http://greg:turnquist@localhost:8080/api/employees/1" | grep Bilbo
+               curl "http://greg:turnquist@localhost:8080/api/employees/2" | grep Frodo
+               
+groups:
+- name: main
+  jobs:
+      - build
+      - statican
+      - itest
+
