@@ -23,7 +23,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
  */
 // tag::code[]
 @SpringBootApplication
-public class ReactAndSpringDataRestApplication {
+public final class ReactAndSpringDataRestApplication {
 
 	private ReactAndSpringDataRestApplication() {
 		//needed a private constructor to please PMD (since all methods are static)
