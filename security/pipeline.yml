@@ -20,7 +20,7 @@ resources:
      type: s3
      source:
         bucket: concourse-ronan
-        versioned_file: demo-0.0.1-SNAPSHOT.war
+        versioned_file: react-and-spring-data-rest-security-0.0.1-SNAPSHOT.jar
         access_key_id: ((S3_ACCESS_KEY))
         secret_access_key: ((S3_SECRET_KEY))
         region: us-east-1
@@ -44,7 +44,7 @@ jobs:
              repository: adoptopenjdk/maven-openjdk11
              tag: latest
        inputs: [{name: demogit}]
-       outputs: [{name: outwar}]
+       outputs: [{name: outjar}]
        run:
           path: sh
           args:
@@ -52,11 +52,11 @@ jobs:
              - |
                cd demogit/security
                mvn package
-               cp target/react-and-spring-data-rest-security-0.0.1-SNAPSHOT.jar ../../outwar
+               cp target/react-and-spring-data-rest-security-0.0.1-SNAPSHOT.jar ../../outjar
   - task: finder2 
     config:
        platform: linux
-       inputs: [{name: outwar}]
+       inputs: [{name: outjar}]
        image_resource:
           type: docker-image
           source:
@@ -73,7 +73,7 @@ jobs:
                find ..
   - put: outjar
     params:
-       file: outwar/react-and-spring-data-rest-security-0.0.1-SNAPSHOT.jar
+       file: outjar/react-and-spring-data-rest-security-0.0.1-SNAPSHOT.jar
   
 - name: statican
   public: true
